@@ -1,4 +1,4 @@
-from models import Movement, MovementCreate, MovementListItem, Product
+from models import Movement, MovementCreate, MovementListItem, MovementResponse, Product
 from db import SessionDep
 from fastapi import APIRouter, status, HTTPException, Depends
 from sqlmodel import select
@@ -33,7 +33,7 @@ def _recalculate_stock_totals_after_change(
         running_stock -= _movement_delta(movement)
         session.add(movement)
 
-@router.post('/', response_model= Movement, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=MovementResponse, status_code=status.HTTP_201_CREATED)
 async def create_movement(
     movement_data: MovementCreate,
     session: SessionDep,
@@ -65,7 +65,16 @@ async def create_movement(
     session.add(product)
     session.commit()
     session.refresh(movement_db)
-    return movement_db
+    return MovementResponse(
+        id=movement_db.id,
+        employee=movement_db.employee,
+        quantity=movement_db.quantity,
+        date=movement_db.date,
+        type=movement_db.type,
+        stock_total=movement_db.stock_total,
+        product_id=movement_db.product_id,
+        title=product.title,
+    )
 
 @router.get('/', response_model=list[MovementListItem])
 async def list_movement(session: SessionDep):
@@ -184,7 +193,7 @@ async def get_products_with_less_egress_and_more_expensive(session: SessionDep):
     ]
     
 
-@router.patch("/{movement_id}", response_model=Movement, status_code=status.HTTP_201_CREATED)
+@router.patch("/{movement_id}", response_model=MovementResponse, status_code=status.HTTP_201_CREATED)
 async def edit_movement(
     movement_id: int,
     movement_data: MovementCreate,
@@ -248,7 +257,17 @@ async def edit_movement(
     session.add(movement_db)
     session.commit()
     session.refresh(movement_db)
-    return movement_db
+    product = session.get(Product, movement_db.product_id)
+    return MovementResponse(
+        id=movement_db.id,
+        employee=movement_db.employee,
+        quantity=movement_db.quantity,
+        date=movement_db.date,
+        type=movement_db.type,
+        stock_total=movement_db.stock_total,
+        product_id=movement_db.product_id,
+        title=product.title if product else "",
+    )
 
 
 

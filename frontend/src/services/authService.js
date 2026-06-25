@@ -15,9 +15,9 @@ export const login = async (username, password) => {
     }
     return response.data;
   } catch (error) {
-    console.error("Error during login:", error);
-    return {
-      error: error.response?.data?.detail || "Usuario o contraseña incorrectos",
-    };
+    throw new Error(
+      error.response?.data?.detail || "Usuario o contraseña incorrectos",
+      { cause: error },
+    );
   }
 };

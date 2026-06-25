@@ -6,13 +6,13 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
-import DialogComponent from "../dialog/DialogComponent";
+import DialogComponent from "@/components/molecules/dialog/DialogComponent";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
-import ProductDetailDialog from "../dialog/ProductDetailDialog";
-import ProductEditDialog from "../dialog/ProductEditDialog";
-import { API_URL } from "../../../config/api";
-import { removeProduct } from "../../../store/productSlice";
+import ProductDetailDialog from "@/components/molecules/dialog/ProductDetailDialog";
+import ProductEditDialog from "@/components/molecules/dialog/ProductEditDialog";
+import { API_URL } from "@/config/api";
+import { removeProduct } from "@/store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 export default function CardComponent({ alt, product }) {
   const dispatch = useDispatch();

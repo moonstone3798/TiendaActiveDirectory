@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import ButtonComponent from "../../atoms/button/ButtonComponent";
-import DialogWrapper from "../../atoms/dialog/DialogWrapper";
-import { API_URL } from "../../../config/api";
+import ButtonComponent from "@/components/atoms/button/ButtonComponent";
+import DialogWrapper from "@/components/atoms/dialog/DialogWrapper";
+import { API_URL } from "@/config/api";
 const ProductDetailDialog = ({ open, onClose, alt, product }) => {
   return (
     <DialogWrapper

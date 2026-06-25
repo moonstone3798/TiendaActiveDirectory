@@ -1,4 +1,4 @@
-import Navbar from "../molecules/nav/Navbar";
+import Navbar from "@/components/molecules/nav/Navbar";
 import { Outlet } from "react-router-dom";
 
 const LoguedLayout = () => {

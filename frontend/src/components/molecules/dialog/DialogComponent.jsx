@@ -1,7 +1,7 @@
 import Slide from "@mui/material/Slide";
 import IconButton from "@mui/material/IconButton";
-import ButtonComponent from "../../atoms/button/ButtonComponent";
-import DialogWrapper from "../../atoms/dialog/DialogWrapper";
+import ButtonComponent from "@/components/atoms/button/ButtonComponent";
+import DialogWrapper from "@/components/atoms/dialog/DialogWrapper";
 import { forwardRef, Fragment, useState } from "react";
 
 const Transition = forwardRef(function Transition(props, ref) {

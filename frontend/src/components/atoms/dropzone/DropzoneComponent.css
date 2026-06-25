@@ -1,0 +1,142 @@
+.dropzone-wrapper {
+  position: relative;
+}
+
+.dropzone-component {
+  min-height: 170px;
+  border: 2px dashed #ff8fab;
+  border-radius: 12px;
+  background-color: #fff7fa;
+  transition: all 0.2s ease;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropzone-component:hover:not(.has-initial-image):not(:has(.dz-preview .dz-image img)) {
+  border-color: #f06292;
+    
+}
+
+.dropzone-component .dz-message {
+  color: #7a4a5a;
+  font-weight: 600;
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+  z-index: 1;
+}
+
+.dropzone-component.has-initial-image .dz-message {
+  display: none;
+}
+
+.dropzone-initial-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.dropzone-initial-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.dropzone-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 2;
+}
+
+.dropzone-remove-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+
+
+.dropzone-component .dz-preview {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  top: 0;
+  left: 0;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.dropzone-component .dz-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropzone-component .dz-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.dropzone-component .dz-preview:hover .dz-image img {
+  transform: none;
+  filter: none;
+}
+
+.dropzone-component .dz-remove,
+.dropzone-component .dz-remove-preview {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 2;
+}
+
+.dropzone-component .dz-remove:hover,
+.dropzone-component .dz-remove-preview:hover {
+  background: rgba(0, 0, 0, 0.8);
+}

@@ -1,11 +1,11 @@
-import styles from "./Login.module.css";
+import styles from "@/components/router/login/Login.module.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import ButtonComponent from "../../atoms/button/ButtonComponent";
+import ButtonComponent from "@/components/atoms/button/ButtonComponent";
 import { useState } from "react";
-import Input from "../../atoms/input/Input";
-import PasswordInput from "../../atoms/input/PasswordInput";
-import { loginUser } from "../../../store/authSlice";
+import Input from "@/components/atoms/input/Input";
+import PasswordInput from "@/components/atoms/input/PasswordInput";
+import { loginUser } from "@/store/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 const Login = () => {
@@ -16,16 +16,24 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const handleLogin = async () => {
-    setLoading(true);
-    setError(null);
-    const response = await dispatch(loginUser({ username, password }));
-    if (response.payload.error) {
-      setError(response.payload.error || "Error al iniciar sesión");
-    } else {
-      localStorage.setItem("userInfo", JSON.stringify(response.payload));
+    try {
+      setLoading(true);
+      setError(null);
+
+      const payload = await dispatch(
+        loginUser({ username, password }),
+      ).unwrap();
+      localStorage.setItem("userInfo", JSON.stringify(payload));
       navigate("/home");
+    } catch (err) {
+      const errorMessage =
+        typeof err === "string"
+          ? err
+          : err?.message || "Error al iniciar sesión";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
   const resetForm = () => {
     setUsername("");

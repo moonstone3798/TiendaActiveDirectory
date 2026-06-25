@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import CardComponent from "../card/CardComponent";
-import { fetchProducts } from "../../../store/productSlice";
+import CardComponent from "@/components/molecules/card/CardComponent";
+import { fetchProducts } from "@/store/productSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 const ProductGrid = () => {

@@ -13,7 +13,13 @@ const Table = ({ rows, columns, loading = false }) => {
         },
         "& .MuiDataGrid-cell:not(.MuiDataGrid-cell--editable)": {
           cursor: "default",
+          border: "none",
         },
+        "& .MuiDataGrid-cell:not(.MuiDataGrid-cell--editable):focus, & .MuiDataGrid-cell:not(.MuiDataGrid-cell--editable):focus-within":
+          {
+            outline: "none",
+          },
+        border: "none",
       })}
     >
       <DataGrid
@@ -24,7 +30,7 @@ const Table = ({ rows, columns, loading = false }) => {
         disableRowSelectionOnClick
         localeText={{
           ...esES.components.MuiDataGrid.defaultProps.localeText,
-          paginationRowsPerPage: "Filas por pagina:",
+          paginationRowsPerPage: "Filas por página:",
         }}
       />
     </Box>

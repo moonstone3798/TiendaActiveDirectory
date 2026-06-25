@@ -8,7 +8,9 @@ export const loginUser = createAsyncThunk(
       const data = await loginService(username, password);
       return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(
+        error.message || "Usuario o contraseña incorrectos",
+      );
     }
   },
 );
@@ -39,6 +41,12 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        if (!action.payload?.access_token) {
+          state.loading = false;
+          state.error = action.payload?.error || "Error al iniciar sesión";
+          state.isAuthenticated = false;
+          return;
+        }
         state.loading = false;
         state.token = action.payload.access_token;
         state.user = action.payload.user || null;

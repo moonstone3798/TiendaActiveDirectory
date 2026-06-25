@@ -9,11 +9,45 @@ import {
   getProductsWithLessEgressAndMoreExpensive,
 } from "../services/movementService";
 import { setError } from "./errorSlice";
+import { logout } from "./authSlice";
+
+const normalizeMovement = (movement) => {
+  if (!movement) {
+    return movement;
+  }
+  return {
+    ...movement,
+    product: movement.product || movement.title || "",
+  };
+};
+
+const isInvalidTokenError = (message) => {
+  if (!message) {
+    return false;
+  }
+  const normalized = String(message).toLowerCase();
+  return (
+    normalized.includes("not authenticated") ||
+    normalized.includes("could not validate credentials") ||
+    normalized.includes("token") ||
+    normalized.includes("unauthorized") ||
+    normalized.includes("no autorizado") ||
+    normalized.includes("credenciales")
+  );
+};
+
+const handleAuthError = (thunkAPI, message) => {
+  if (isInvalidTokenError(message)) {
+    thunkAPI.dispatch(logout());
+  }
+};
+
 export const fetchMovements = createAsyncThunk(
   "movements/fetchMovements",
   async (_, thunkAPI) => {
     const response = await getMovements();
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       return response;
@@ -26,6 +60,7 @@ export const addMovement = createAsyncThunk(
   async (movementData, thunkAPI) => {
     const response = await createMovement(movementData);
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       thunkAPI.dispatch(
@@ -43,6 +78,7 @@ export const updateMovement = createAsyncThunk(
   async ({ movementId, movementData }, thunkAPI) => {
     const response = await editMovement(movementId, movementData);
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       thunkAPI.dispatch(
@@ -60,6 +96,7 @@ export const removeMovement = createAsyncThunk(
   async (movementId, thunkAPI) => {
     const response = await deleteMovement(movementId);
     if (response?.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       thunkAPI.dispatch(
@@ -77,6 +114,7 @@ export const fetchProductsWithMoreEgress = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await getProductsWithMoreEgress();
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       return response;
@@ -88,6 +126,7 @@ export const fetchProductsWithLessEgress = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await getProductsWithLessEgress();
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       return response;
@@ -99,6 +138,7 @@ export const fetchProductsWithLessEgressAndMoreExpensive = createAsyncThunk(
   async (_, thunkAPI) => {
     const response = await getProductsWithLessEgressAndMoreExpensive();
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
     } else {
       return response;
@@ -123,14 +163,17 @@ const movementSlice = createSlice({
     });
     builder.addCase(fetchMovements.fulfilled, (state, action) => {
       state.loading = false;
-      state.movements = action.payload?.data || [];
+      state.movements = (action.payload?.data || []).map(normalizeMovement);
     });
     builder.addCase(fetchMovements.rejected, (state) => {
       state.loading = false;
     });
     builder.addCase(addMovement.fulfilled, (state, action) => {
       if (action.payload?.data) {
-        state.movements = [action.payload.data, ...state.movements];
+        state.movements = [
+          normalizeMovement(action.payload.data),
+          ...state.movements,
+        ];
       }
     });
     builder.addCase(updateMovement.fulfilled, (state, action) => {
@@ -141,7 +184,7 @@ const movementSlice = createSlice({
         (movement) => movement.id === action.payload.data.id,
       );
       if (index !== -1) {
-        state.movements[index] = action.payload.data;
+        state.movements[index] = normalizeMovement(action.payload.data);
       }
     });
     builder.addCase(removeMovement.fulfilled, (state, action) => {

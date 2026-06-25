@@ -1,15 +1,45 @@
-import Table from "../../atoms/table/Table";
-import { useEffect } from "react";
+import Table from "@/components/atoms/table/Table";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { fetchMovements, removeMovement } from "../../../store/movementSlice";
+import { fetchMovements, removeMovement } from "@/store/movementSlice";
+import EditIcon from "@mui/icons-material/Edit";
 
 const formatDate = (value) => {
   if (!value) {
     return "-";
   }
-  return new Date(value).toLocaleString("es-AR");
+
+  const rawValue =
+    value && typeof value === "object" && "value" in value
+      ? value.value
+      : value;
+
+  if (!rawValue) {
+    return "-";
+  }
+
+  const hasTimezone =
+    typeof rawValue === "string" && /([zZ]|[+-]\d{2}:?\d{2})$/.test(rawValue);
+
+  const parsedDate = new Date(
+    typeof rawValue === "string" && !hasTimezone ? `${rawValue}Z` : rawValue,
+  );
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "-";
+  }
+
+  return parsedDate.toLocaleString("es-AR", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 };
 const columns = [
   {
@@ -46,7 +76,7 @@ const columns = [
     flex: 1,
     headerName: "Cantidad",
     field: "quantity",
-    editable: true,
+    editable: false,
     type: "number",
   },
   {
@@ -57,19 +87,19 @@ const columns = [
     type: "number",
   },
 ];
-const MovementTable = () => {
+const MovementTable = ({ handleOpenEdit }) => {
   const dispatch = useDispatch();
   const movements = useSelector((state) => state.movement.movements);
   const loading = useSelector((state) => state.movement.loading);
   const userRole = useSelector((state) => state.auth.user?.role);
-
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const handleDelete = (movementId) => {
     if (!movementId) {
       return;
     }
-    dispatch(removeMovement(movementId));
+    setLoadingDelete(true);
+    dispatch(removeMovement(movementId)).finally(() => setLoadingDelete(false));
   };
-
   const columnsWithActions = [
     ...columns,
     {
@@ -80,13 +110,25 @@ const MovementTable = () => {
       filterable: false,
       editable: false,
       renderCell: (params) => (
-        <IconButton
-          aria-label="Eliminar movimiento"
-          onClick={() => handleDelete(params.row.id)}
-          size="small"
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <IconButton
+            aria-label="Eliminar movimiento"
+            onClick={() => handleDelete(params.row.id)}
+            size="small"
+            disabled={loadingDelete}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="Editar movimiento"
+            onClick={() => handleOpenEdit(params.row)}
+          >
+            <EditIcon sx={{ color: "#ab846e" }} />
+          </IconButton>
+        </div>
       ),
     },
   ];

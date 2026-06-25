@@ -1,13 +1,12 @@
 import Box from "@mui/material/Box";
 import Snackbar from "@mui/material/Snackbar";
 import { useSelector, useDispatch } from "react-redux";
-import { clearError } from "../../../store/errorSlice";
+import { clearError } from "@/store/errorSlice";
 
 const SnackbarComponent = () => {
   const dispatch = useDispatch();
   const message = useSelector((state) => state.error.message);
   const type = useSelector((state) => state.error.type);
-
   const handleClose = () => {
     dispatch(clearError());
   };
@@ -26,7 +25,7 @@ const SnackbarComponent = () => {
             color: "#fff",
           },
         }}
-        autoHideDuration={3000}
+        autoHideDuration={2500}
       />
     </Box>
   );

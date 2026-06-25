@@ -7,9 +7,9 @@ import MenuItem from "@mui/material/MenuItem";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Box from "@mui/material/Box";
 import { useState } from "react";
-import DrawerComponent from "../drawer/DrawerComponent";
+import DrawerComponent from "@/components/molecules/drawer/DrawerComponent";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../../store/authSlice";
+import { logout } from "@/store/authSlice";
 import { useDispatch } from "react-redux";
 const Navbar = () => {
   const dispatch = useDispatch();

@@ -8,14 +8,10 @@ const createErrorSlice = createSlice({
   reducers: {
     clearError: (state) => {
       state.message = null;
-      state.type = null;
     },
     setError: (state, action) => {
       state.message = action.payload.message;
       state.type = action.payload.type;
-      setTimeout(() => {
-        createErrorSlice.actions.clearError();
-      }, 3000);
     },
   },
 });

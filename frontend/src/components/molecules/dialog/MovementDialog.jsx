@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
-import ButtonComponent from "../../atoms/button/ButtonComponent";
-import DialogWrapper from "../../atoms/dialog/DialogWrapper";
-import Datalist from "../../atoms/datalist/Datalist";
+import ButtonComponent from "@/components/atoms/button/ButtonComponent";
+import DialogWrapper from "@/components/atoms/dialog/DialogWrapper";
+import Datalist from "@/components/atoms/datalist/Datalist";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../../store/productSlice";
-import SelectComponent from "../../atoms/select/SelectComponent";
-import InputNumber from "../../atoms/input/InputNumber";
-const MovementDialog = ({ open, onClose, onSave }) => {
-  const [form, setForm] = useState({
-    product: null,
-    quantity: 0,
-    type: 1,
-  });
+import { fetchProducts } from "@/store/productSlice";
+import SelectComponent from "@/components/atoms/select/SelectComponent";
+import InputNumber from "@/components/atoms/input/InputNumber";
+const buildFormFromMovement = (movement) => ({
+  product: movement
+    ? {
+        id: movement.product_id,
+        title: movement.product,
+      }
+    : null,
+  quantity: movement ? movement.quantity : 0,
+  type: movement ? (movement.type ? 1 : 0) : 1,
+  id: movement ? movement.id : null,
+});
+const MovementDialog = ({ open, onClose, onSave, movement }) => {
+  const [form, setForm] = useState(buildFormFromMovement(movement));
   const dispatch = useDispatch();
   const products = useSelector((state) => state.product.products);
 
@@ -36,18 +43,14 @@ const MovementDialog = ({ open, onClose, onSave }) => {
     }));
   };
   const handleClose = () => {
-    setForm({
-      product: null,
-      quantity: 0,
-      type: 1,
-    });
+    setForm(buildFormFromMovement(movement));
     onClose();
   };
   return (
     <DialogWrapper
       open={open}
       onClose={handleClose}
-      title="Agregar movimiento"
+      title={movement ? "Editar movimiento" : "Agregar movimiento"}
       dialogProps={{ fullWidth: true, maxWidth: "sm" }}
       titleProps={{ sx: { color: "#4E342E", fontWeight: 700 } }}
       contentProps={{ sx: { pt: 2 } }}

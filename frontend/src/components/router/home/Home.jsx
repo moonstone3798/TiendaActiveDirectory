@@ -1,9 +1,9 @@
 import { useState } from "react";
-import ButtonComponent from "../../atoms/button/ButtonComponent";
-import ProductEditDialog from "../../molecules/dialog/ProductEditDialog";
-import ProductGrid from "../../molecules/grid/ProductGrid";
+import ButtonComponent from "@/components/atoms/button/ButtonComponent";
+import ProductEditDialog from "@/components/molecules/dialog/ProductEditDialog";
+import ProductGrid from "@/components/molecules/grid/ProductGrid";
 import { useSelector } from "react-redux";
-import "./Home.module.css";
+import "@/components/router/home/Home.module.css";
 const Home = () => {
   const [openDialogOpen, setOpenDialogOpen] = useState(false);
   const userRole = useSelector((state) => state.auth.user?.role);

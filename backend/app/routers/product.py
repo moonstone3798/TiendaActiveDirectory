@@ -1,7 +1,7 @@
 from pathlib import Path
 from uuid import uuid4
 
-from models import Product, ProductCreate
+from models import Product, ProductCreate, ProductUpdate
 from db import SessionDep
 from fastapi import APIRouter, status, HTTPException, UploadFile, File
 from sqlmodel import select
@@ -50,7 +50,7 @@ async def list_product(session: SessionDep):
 
 
 @router.patch("/{product_id}", response_model=Product, status_code=status.HTTP_201_CREATED)
-async def edit_product(product_id: int, product_data: ProductCreate , session: SessionDep):
+async def edit_product(product_id: int, product_data: ProductUpdate , session: SessionDep):
     product_db = session.get(Product, product_id)
     if not product_db: 
         raise HTTPException(

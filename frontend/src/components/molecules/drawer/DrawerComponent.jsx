@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Drawer from "@mui/material/Drawer";
-import DrawerListComponent from "../drawerList/DrawerListComponent";
+import DrawerListComponent from "@/components/molecules/drawerList/DrawerListComponent";
 
 const DrawerComponent = ({ open, toggleDrawer }) => {
   const [internalOpen, setInternalOpen] = useState(false);

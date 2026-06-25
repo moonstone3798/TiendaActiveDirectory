@@ -6,12 +6,37 @@ import {
   deleteProduct,
 } from "../services/productService";
 import { setError } from "./errorSlice";
+import { logout } from "./authSlice";
+
+const isInvalidTokenError = (message) => {
+  if (!message) {
+    return false;
+  }
+  const normalized = String(message).toLowerCase();
+  return (
+    normalized.includes("not authenticated") ||
+    normalized.includes("could not validate credentials") ||
+    normalized.includes("token") ||
+    normalized.includes("unauthorized") ||
+    normalized.includes("no autorizado") ||
+    normalized.includes("credenciales")
+  );
+};
+
+const handleAuthError = (thunkAPI, message) => {
+  if (isInvalidTokenError(message)) {
+    thunkAPI.dispatch(logout());
+  }
+};
+
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async (_, thunkAPI) => {
     const response = await getProducts();
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
+      return thunkAPI.rejectWithValue(response.error);
     } else {
       return response;
     }
@@ -23,7 +48,9 @@ export const addProduct = createAsyncThunk(
   async (productData, thunkAPI) => {
     const response = await createProduct(productData);
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
+      return thunkAPI.rejectWithValue(response.error);
     } else {
       thunkAPI.dispatch(
         setError({ message: "Producto creado exitosamente", type: "success" }),
@@ -38,7 +65,9 @@ export const updateProduct = createAsyncThunk(
   async ({ productId, productData }, thunkAPI) => {
     const response = await editProduct(productId, productData);
     if (response.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
+      return thunkAPI.rejectWithValue(response.error);
     } else {
       thunkAPI.dispatch(
         setError({
@@ -56,7 +85,9 @@ export const removeProduct = createAsyncThunk(
   async (productId, thunkAPI) => {
     const response = await deleteProduct(productId);
     if (response?.error) {
+      handleAuthError(thunkAPI, response.error);
       thunkAPI.dispatch(setError({ message: response.error, type: "error" }));
+      return thunkAPI.rejectWithValue(response.error);
     } else {
       thunkAPI.dispatch(
         setError({
